@@ -236,12 +236,40 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Agent messages get a small Popstart mark to the left of the bubble */
 .message-agent {
-  /* agent on left */
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
 }
+.message-agent::before {
+  content: 'P';
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--accent);
+  background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18) 0%, transparent 55%);
+  margin-top: 2px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.message-agent .message-bubble {
+  flex: 1;
+  max-width: calc(100% - 38px);
+}
+
 .message-user {
   margin-left: auto;
   max-width: 78%;
+  display: block; /* no avatar slot */
 }
 .message-bubble {
   padding: 12px 16px;
@@ -290,7 +318,11 @@ body {
   border: 1px solid var(--accent-soft);
   border-radius: var(--radius-lg);
   border-bottom-left-radius: 4px;
-  max-width: 92%;
+  max-width: calc(92% - 38px);
+  flex: 1; /* fit within the flex .message-agent container */
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* allow flex children to wrap */
 }
 .prompt-form-hint {
   font-size: 13px;
@@ -422,6 +454,166 @@ body {
 .prompt-form-submit:disabled {
   background: var(--ink-faint);
   cursor: not-allowed;
+}
+
+/* Per-item cost prompt — single category at a time */
+.cost-item-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cost-item-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cost-item-progress {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  font-weight: 600;
+}
+.cost-item-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 2px 0;
+  color: var(--ink);
+}
+.cost-item-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+.cost-item-bench {
+  font-size: 11px;
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  margin-bottom: 8px;
+}
+.cost-item-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+.cost-item-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--bg);
+  font-variant-numeric: tabular-nums;
+}
+.cost-item-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.cost-item-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.cost-item-btn {
+  padding: 9px 14px;
+  border-radius: 6px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--bg-elev);
+  color: var(--ink-soft);
+  transition: all 0.15s;
+  letter-spacing: 0.02em;
+}
+.cost-item-btn:hover {
+  background: var(--bg-sunken);
+  color: var(--ink);
+  border-color: var(--ink-soft);
+}
+.cost-item-btn.primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.cost-item-btn.primary:hover { background: var(--accent-deep); }
+.cost-item-btn.bench {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border-color: color-mix(in srgb, var(--amber) 25%, transparent);
+}
+.cost-item-btn.bench:hover {
+  background: var(--amber);
+  color: white;
+  border-color: var(--amber);
+}
+.cost-item-btn.skip {
+  color: var(--ink-faint);
+  background: transparent;
+  border-color: var(--line);
+}
+.cost-item-btn.skip:hover { color: var(--ink); }
+.cost-item-running {
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  padding: 4px 0;
+  border-top: 1px dashed var(--line);
+  margin-top: 4px;
+}
+.cost-item-running-total {
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.cost-item-add-custom {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+}
+.cost-item-add-custom-btn {
+  background: transparent;
+  border: 1px dashed var(--ink-faint);
+  color: var(--ink-soft);
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.cost-item-add-custom-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.cost-item-custom-row {
+  display: none;
+  gap: 8px;
+  margin-top: 8px;
+}
+.cost-item-custom-row.shown { display: flex; flex-direction: column; gap: 6px; }
+.cost-item-custom-row .row {
+  display: flex;
+  gap: 8px;
+}
+.cost-item-custom-row input {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+}
+.cost-item-custom-row input[type="number"] {
+  max-width: 120px;
 }
 
 /* Probe message — coaching style, not error */
@@ -664,11 +856,31 @@ body {
   line-height: 1.45;
   cursor: text;
   border: 1px solid transparent;
-  transition: border-color 0.15s;
+  transition: all 0.15s;
+  position: relative;
+}
+.iv-row.editable .iv-row-value {
+  cursor: pointer;
 }
 .iv-row.editable .iv-row-value:hover {
-  border-color: var(--line);
+  border-color: var(--accent);
   background: var(--bg-elev);
+  box-shadow: 0 1px 4px rgba(15, 76, 92, 0.08);
+}
+.iv-row.editable .iv-row-value::after {
+  content: '✎';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-faint);
+  font-size: 13px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.iv-row.editable .iv-row-value:hover::after {
+  opacity: 1;
+  color: var(--accent);
 }
 .iv-row-value.empty {
   color: var(--ink-faint);
@@ -842,6 +1054,51 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+/* Q-recap table inside Zone 1 — sits after synthesis, before chips */
+.q-recap {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+  background: var(--bg-sunken);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.q-recap thead th {
+  text-align: left;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  font-weight: 700;
+  padding: 8px 12px 6px;
+  border-bottom: 1px solid var(--line);
+}
+.q-recap td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+.q-recap tr:last-child td { border-bottom: none; }
+.q-recap .q-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  width: 36px;
+  white-space: nowrap;
+}
+.q-recap .q-label {
+  font-weight: 600;
+  color: var(--ink-soft);
+  width: 38%;
+}
+.q-recap .q-val {
+  color: var(--ink);
+  font-weight: 500;
 }
 .chip {
   padding: 7px 12px;
@@ -1657,18 +1914,18 @@ const promptSpec = {
     example: 'I\'m targeting a March launch, so → Within 3 months',
   },
   P3: {
-    type: 'textarea',
+    type: 'cost-list',
     title: 'One-Time Startup Costs',
-    hint: 'List everything you need to buy or pay for once to get your business open. Include equipment, licenses, legal fees, website build, branding, and any deposits. If you have real quotes, use them. If not, use your best estimate and we will flag it.',
-    placeholder: 'Website build: $5,000\nBranding and logo: $3,000\nLLC registration and permits: $800\nInitial inventory: $8,000\nProduct photography: $1,500',
+    hint: 'I\'ll walk you through the typical cost categories for your business type. For each one, enter your real estimate, use the typical range, or skip it if it doesn\'t apply.',
+    categoriesMap: 'oneTimeCategories',
     example: 'Website build: $5,000 / Branding and logo: $3,000 / LLC registration and permits: $800 / Initial inventory: $8,000 / Product photography: $1,500',
   },
   P4: {
-    type: 'textarea',
+    type: 'cost-list',
     title: 'Monthly Operating Costs',
-    hint: 'List your ongoing monthly expenses — the costs that repeat whether or not you make a sale. Include rent, payroll, software subscriptions, utilities, insurance, and marketing. Be specific. This is the number that determines how long your runway lasts.',
-    placeholder: 'Software stack (Shopify, Klaviyo, accounting): $300\nAdvertising budget: $1,500\nShipping and fulfillment supplies: $400\nInsurance: $150\nBookkeeping: $200',
-    example: 'Software stack (Shopify, Klaviyo, accounting): $300 / Advertising budget: $1,500 / Shipping and fulfillment supplies: $400 / Insurance: $150 / Bookkeeping: $200 / Misc: $250',
+    hint: 'Same approach for monthly costs — I\'ll walk you through the typical categories, and you can enter your number, use the typical range, or skip.',
+    categoriesMap: 'monthlyCategories',
+    example: 'Software stack: $300/mo / Advertising: $1,500/mo / Shipping: $400/mo / Insurance: $150/mo / Bookkeeping: $200/mo',
   },
   P5: {
     type: 'select',
@@ -1686,7 +1943,123 @@ const promptSpec = {
   }
 };
 
-// Coach Mode topics from ADD §2.5
+// Per-item cost categories for P3 (one-time) and P4 (monthly).
+// Categories shown to the user are filtered by their P1 business type — irrelevant
+// categories are skipped. Each category has a benchmark range and a midpoint that
+// the "Use typical range" button substitutes for the user.
+const oneTimeCategories = {
+  'Retail product business': [
+    { id: 'inventory', label: 'Initial inventory', desc: 'First production run or stock', range: [5000, 25000] },
+    { id: 'equipment', label: 'Equipment', desc: 'POS, displays, fixtures', range: [3000, 15000] },
+    { id: 'branding', label: 'Branding & logo', desc: 'Logo, visual identity', range: [1000, 5000] },
+    { id: 'deposits', label: 'Deposits & rent setup', desc: 'First/last month, security deposit', range: [2000, 10000] },
+    { id: 'legal', label: 'Legal/LLC setup', desc: 'Registration, permits, insurance setup', range: [500, 2000] }
+  ],
+  'E-commerce': [
+    { id: 'website', label: 'Website build', desc: 'Design, dev, launch', range: [3000, 8000] },
+    { id: 'branding', label: 'Branding & logo', desc: 'Logo, visual identity', range: [1000, 5000] },
+    { id: 'inventory', label: 'Initial inventory', desc: 'First production run', range: [5000, 15000] },
+    { id: 'photography', label: 'Product photography', desc: 'Hero shots, product images', range: [500, 2000] },
+    { id: 'legal', label: 'Legal/LLC setup', desc: 'Registration, permits, insurance setup', range: [500, 2000] }
+  ],
+  'Service business': [
+    { id: 'website', label: 'Website build', desc: 'Design, dev, launch', range: [2000, 6000] },
+    { id: 'branding', label: 'Branding & logo', desc: 'Logo, visual identity', range: [1000, 3000] },
+    { id: 'equipment', label: 'Equipment', desc: 'Tools, laptop, software setup', range: [1000, 8000] },
+    { id: 'legal', label: 'Legal/LLC setup', desc: 'Registration, permits, insurance setup', range: [500, 1500] }
+  ],
+  'Food and beverage': [
+    { id: 'equipment', label: 'Equipment', desc: 'Kitchen equipment, ovens, fridges', range: [10000, 40000] },
+    { id: 'deposits', label: 'Deposits & rent setup', desc: 'First/last month, security deposit', range: [5000, 20000] },
+    { id: 'inventory', label: 'Initial inventory', desc: 'Ingredients, supplies', range: [10000, 30000] },
+    { id: 'branding', label: 'Branding & logo', desc: 'Logo, packaging, menu design', range: [2000, 5000] },
+    { id: 'legal', label: 'Legal/LLC setup', desc: 'Registration, permits, food safety, insurance', range: [1000, 3000] }
+  ],
+  'Health and wellness': [
+    { id: 'equipment', label: 'Equipment', desc: 'Treatment equipment, supplies', range: [2000, 10000] },
+    { id: 'website', label: 'Website build', desc: 'Design, dev, launch', range: [2000, 6000] },
+    { id: 'deposits', label: 'Deposits & rent setup', desc: 'Studio or clinic setup', range: [2000, 8000] },
+    { id: 'branding', label: 'Branding & logo', desc: 'Logo, visual identity', range: [1000, 4000] },
+    { id: 'legal', label: 'Legal/LLC setup', desc: 'Registration, permits, professional licensing', range: [500, 3000] }
+  ],
+  'Professional services': [
+    { id: 'website', label: 'Website build', desc: 'Design, dev, launch', range: [1000, 4000] },
+    { id: 'branding', label: 'Branding & logo', desc: 'Logo, visual identity', range: [500, 2000] },
+    { id: 'equipment', label: 'Equipment & software', desc: 'Laptop, professional software stack', range: [500, 3000] },
+    { id: 'legal', label: 'Legal/LLC setup', desc: 'Registration, permits, professional liability', range: [500, 2000] }
+  ],
+  'Other': [
+    { id: 'website', label: 'Website build', desc: 'Design, dev, launch', range: [2000, 6000] },
+    { id: 'branding', label: 'Branding & logo', desc: 'Logo, visual identity', range: [1000, 3000] },
+    { id: 'equipment', label: 'Equipment', desc: 'Tools & setup', range: [1000, 8000] },
+    { id: 'legal', label: 'Legal/LLC setup', desc: 'Registration, permits, insurance setup', range: [500, 2000] }
+  ]
+};
+
+const monthlyCategories = {
+  'Retail product business': [
+    { id: 'rent', label: 'Rent', desc: 'Storefront or warehouse', range: [1500, 4000] },
+    { id: 'utilities', label: 'Utilities', desc: 'Electric, internet, water', range: [200, 500] },
+    { id: 'software', label: 'Software stack', desc: 'POS, accounting, email', range: [200, 500] },
+    { id: 'marketing', label: 'Marketing & advertising', desc: 'Ads, social, content', range: [500, 2000] },
+    { id: 'insurance', label: 'Insurance', desc: 'Liability, property', range: [150, 400] },
+    { id: 'bookkeeping', label: 'Bookkeeping', desc: 'Bookkeeper or software', range: [150, 400] }
+  ],
+  'E-commerce': [
+    { id: 'software', label: 'Software stack', desc: 'Shopify, email tools, accounting', range: [200, 500] },
+    { id: 'marketing', label: 'Marketing & advertising', desc: 'Paid ads, content, social', range: [500, 2500] },
+    { id: 'shipping', label: 'Shipping & fulfillment', desc: 'Boxes, labels, fulfillment fees', range: [200, 800] },
+    { id: 'insurance', label: 'Insurance', desc: 'General liability', range: [100, 300] },
+    { id: 'bookkeeping', label: 'Bookkeeping', desc: 'Bookkeeper or software', range: [150, 400] }
+  ],
+  'Service business': [
+    { id: 'software', label: 'Software stack', desc: 'Tools and subscriptions', range: [150, 400] },
+    { id: 'marketing', label: 'Marketing & customer acquisition', desc: 'Ads, content, outreach', range: [300, 1500] },
+    { id: 'insurance', label: 'Insurance', desc: 'Professional liability', range: [100, 300] },
+    { id: 'bookkeeping', label: 'Bookkeeping', desc: 'Bookkeeper or software', range: [100, 300] }
+  ],
+  'Food and beverage': [
+    { id: 'rent', label: 'Rent', desc: 'Restaurant or commissary', range: [3000, 8000] },
+    { id: 'utilities', label: 'Utilities', desc: 'Electric, gas, water', range: [500, 1500] },
+    { id: 'ingredients', label: 'Ingredients & supplies', desc: 'Food costs, packaging', range: [2000, 6000] },
+    { id: 'payroll', label: 'Payroll', desc: 'Staff wages', range: [2000, 8000] },
+    { id: 'marketing', label: 'Marketing & advertising', desc: 'Local marketing, social', range: [200, 1000] },
+    { id: 'insurance', label: 'Insurance', desc: 'Liability, food handler', range: [200, 500] }
+  ],
+  'Health and wellness': [
+    { id: 'rent', label: 'Rent', desc: 'Studio or clinic space', range: [1500, 4000] },
+    { id: 'utilities', label: 'Utilities', desc: 'Electric, internet, water', range: [200, 500] },
+    { id: 'software', label: 'Software stack', desc: 'Booking, EHR, accounting', range: [150, 400] },
+    { id: 'marketing', label: 'Marketing & advertising', desc: 'Local marketing, social', range: [300, 1500] },
+    { id: 'supplies', label: 'Supplies', desc: 'Treatment supplies', range: [200, 800] },
+    { id: 'insurance', label: 'Insurance', desc: 'Professional liability', range: [150, 500] }
+  ],
+  'Professional services': [
+    { id: 'software', label: 'Software stack', desc: 'Tools and subscriptions', range: [200, 500] },
+    { id: 'marketing', label: 'Marketing & customer acquisition', desc: 'Ads, content, outreach', range: [200, 1000] },
+    { id: 'insurance', label: 'Professional liability insurance', desc: 'Errors & omissions', range: [100, 400] },
+    { id: 'bookkeeping', label: 'Bookkeeping', desc: 'Bookkeeper or software', range: [100, 300] }
+  ],
+  'Other': [
+    { id: 'software', label: 'Software stack', desc: 'Tools and subscriptions', range: [200, 500] },
+    { id: 'marketing', label: 'Marketing & advertising', desc: 'Ads, social, content', range: [300, 1500] },
+    { id: 'insurance', label: 'Insurance', desc: 'General liability', range: [100, 400] },
+    { id: 'bookkeeping', label: 'Bookkeeping', desc: 'Bookkeeper or software', range: [100, 300] }
+  ]
+};
+
+// Helper: midpoint of a range, rounded to a reasonable estimate
+function rangeMid(range) {
+  const mid = (range[0] + range[1]) / 2;
+  // Round to nearest hundred for clean display
+  return Math.round(mid / 100) * 100;
+}
+
+function formatRange(range) {
+  return `$${range[0].toLocaleString()}–$${range[1].toLocaleString()}`;
+}
+
+
 const coachTopics = [
   {
     label: 'My number seems too high — what can I cut?',
@@ -2088,7 +2461,9 @@ function appendAgent(html, opts = {}) {
   bubble.className = 'message-bubble';
   bubble.innerHTML = html;
   div.appendChild(bubble);
-  if (opts.authored) {
+  // Authored marker only shown when explicitly requested (Coach Mode authored answers).
+  // Activity-mode messages no longer surface the marker — it added noise without value.
+  if (opts.showAuthoredMarker) {
     const m = document.createElement('div');
     m.innerHTML = '<span class="authored-marker" title="In production, this response is generated live by the agent. In this prototype it is hand-authored.">[authored answer]</span>';
     div.appendChild(m);
@@ -2207,6 +2582,9 @@ function renderPromptForm(promptKey) {
     };
     wrap.appendChild(flatInputWrap);
     form.appendChild(wrap);
+  } else if (p.type === 'cost-list') {
+    // Per-item flow handled separately
+    renderCostListPrompt(promptKey, form);
   }
 
   messagesEl.appendChild(form);
@@ -2216,6 +2594,187 @@ function renderPromptForm(promptKey) {
 function removePromptForm() {
   const f = messagesEl.querySelector('.prompt-form');
   if (f) f.remove();
+}
+
+// Per-item cost flow state — held alongside the prompt form
+const costFlowState = {
+  promptKey: null,        // P3 or P4
+  categories: [],         // categories[] for the user's P1
+  currentIdx: 0,          // which category we're on
+  items: [],              // collected items so far
+};
+
+function renderCostListPrompt(promptKey, formEl) {
+  const cat = state.answers.P1.value || 'Other';
+  const map = promptSpec[promptKey].categoriesMap === 'oneTimeCategories'
+    ? oneTimeCategories
+    : monthlyCategories;
+  const categories = (map[cat] || map['Other']).slice();
+
+  costFlowState.promptKey = promptKey;
+  costFlowState.categories = categories;
+  costFlowState.currentIdx = 0;
+  costFlowState.items = [];
+
+  // Container for the per-item flow
+  const container = document.createElement('div');
+  container.className = 'cost-item-flow';
+  formEl.appendChild(container);
+  costFlowState.container = container;
+  renderCurrentCostItem();
+}
+
+function renderCurrentCostItem() {
+  const container = costFlowState.container;
+  if (!container) return;
+  container.innerHTML = '';
+
+  const idx = costFlowState.currentIdx;
+  const total = costFlowState.categories.length;
+  const promptKey = costFlowState.promptKey;
+  const isMonthly = promptKey === 'P4';
+  const unit = isMonthly ? '/mo' : '';
+
+  // If we've reached the end of categories, show the "Add custom" or "Done" step
+  if (idx >= total) {
+    renderCostListDoneStep();
+    return;
+  }
+
+  const cat = costFlowState.categories[idx];
+  const midpoint = rangeMid(cat.range);
+
+  const itemEl = document.createElement('div');
+  itemEl.className = 'cost-item-prompt';
+  itemEl.innerHTML = `
+    <div class="cost-item-header">
+      <div>
+        <div class="cost-item-progress">Item ${idx + 1} of ${total}</div>
+        <h4 class="cost-item-title">${cat.label}${isMonthly ? '/month' : ''}</h4>
+      </div>
+    </div>
+    <div class="cost-item-desc">${cat.desc}</div>
+    <div class="cost-item-bench">Typical range: ${formatRange(cat.range)}${unit}</div>
+    <div class="cost-item-input-row">
+      <input type="number" class="cost-item-input" placeholder="$ enter amount" min="0" step="100" />
+      <button class="cost-item-btn primary" data-action="submit">Enter</button>
+    </div>
+    <div class="cost-item-actions">
+      <button class="cost-item-btn bench" data-action="bench" title="Use the midpoint of the typical range as a placeholder">↩ Use typical range ($${midpoint.toLocaleString()}${unit})</button>
+      <button class="cost-item-btn skip" data-action="skip">Skip — doesn't apply</button>
+    </div>
+    ${costFlowState.items.length > 0 ? renderRunningTotal() : ''}
+  `;
+  container.appendChild(itemEl);
+
+  const input = itemEl.querySelector('.cost-item-input');
+  setTimeout(() => input.focus(), 50);
+
+  // Enter key submits
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submitCostItem('user', parseFloat(input.value) || 0);
+    }
+  });
+
+  itemEl.querySelector('[data-action="submit"]').onclick = () => {
+    const v = parseFloat(input.value);
+    if (!v || v <= 0) {
+      input.focus();
+      input.classList.add('error');
+      return;
+    }
+    submitCostItem('user', v);
+  };
+  itemEl.querySelector('[data-action="bench"]').onclick = () => {
+    submitCostItem('benchmark', midpoint);
+  };
+  itemEl.querySelector('[data-action="skip"]').onclick = () => {
+    submitCostItem('skip', 0);
+  };
+}
+
+function submitCostItem(source, amount) {
+  const idx = costFlowState.currentIdx;
+  const cat = costFlowState.categories[idx];
+  if (source !== 'skip' && amount > 0) {
+    costFlowState.items.push({
+      label: cat.label,
+      amount: amount,
+      source: source,   // 'user' | 'benchmark' | 'custom'
+      categoryId: cat.id
+    });
+  }
+  costFlowState.currentIdx++;
+  renderCurrentCostItem();
+}
+
+function renderRunningTotal() {
+  const total = costFlowState.items.reduce((s, it) => s + it.amount, 0);
+  const isMonthly = costFlowState.promptKey === 'P4';
+  const unit = isMonthly ? '/mo' : '';
+  return `<div class="cost-item-running">Running total: <span class="cost-item-running-total">${fmtCurrency(total)}${unit}</span> across ${costFlowState.items.length} item${costFlowState.items.length === 1 ? '' : 's'}</div>`;
+}
+
+function renderCostListDoneStep() {
+  const container = costFlowState.container;
+  const isMonthly = costFlowState.promptKey === 'P4';
+  const unit = isMonthly ? '/mo' : '';
+  const total = costFlowState.items.reduce((s, it) => s + it.amount, 0);
+
+  const doneEl = document.createElement('div');
+  doneEl.className = 'cost-item-prompt';
+  doneEl.innerHTML = `
+    <div>
+      <div class="cost-item-progress">All categories covered</div>
+      <h4 class="cost-item-title">Anything else?</h4>
+      <div class="cost-item-desc">Add a custom line item, or finish if your list is complete.</div>
+    </div>
+    <div class="cost-item-running" style="border-top:none; margin-top:0;">Total so far: <span class="cost-item-running-total">${fmtCurrency(total)}${unit}</span> across ${costFlowState.items.length} item${costFlowState.items.length === 1 ? '' : 's'}</div>
+    <div class="cost-item-add-custom">
+      <button class="cost-item-add-custom-btn" data-action="addcustom">+ Add a custom line item</button>
+      <div class="cost-item-custom-row" id="cost-custom-row">
+        <div class="row">
+          <input type="text" placeholder="Label (e.g. Trademark filing)" id="cost-custom-label" />
+          <input type="number" placeholder="$" id="cost-custom-amount" min="0" step="100" />
+        </div>
+        <div class="row">
+          <button class="cost-item-btn primary" data-action="savecustom">Add item</button>
+          <button class="cost-item-btn skip" data-action="cancelcustom">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div class="cost-item-actions" style="margin-top:8px;">
+      <button class="cost-item-btn primary" data-action="finish">Finish — submit my ${isMonthly ? 'monthly costs' : 'one-time costs'}</button>
+    </div>
+  `;
+  container.innerHTML = '';
+  container.appendChild(doneEl);
+
+  doneEl.querySelector('[data-action="addcustom"]').onclick = () => {
+    const row = doneEl.querySelector('#cost-custom-row');
+    row.classList.add('shown');
+    setTimeout(() => doneEl.querySelector('#cost-custom-label').focus(), 50);
+  };
+  doneEl.querySelector('[data-action="savecustom"]').onclick = () => {
+    const label = doneEl.querySelector('#cost-custom-label').value.trim();
+    const amount = parseFloat(doneEl.querySelector('#cost-custom-amount').value);
+    if (!label || !amount || amount <= 0) {
+      doneEl.querySelector('#cost-custom-label').focus();
+      return;
+    }
+    costFlowState.items.push({ label, amount, source: 'custom', categoryId: 'custom' });
+    renderCostListDoneStep();
+  };
+  doneEl.querySelector('[data-action="cancelcustom"]').onclick = () => {
+    doneEl.querySelector('#cost-custom-row').classList.remove('shown');
+  };
+  doneEl.querySelector('[data-action="finish"]').onclick = () => {
+    // Build the value: text representation of the items
+    const text = costFlowState.items.map(it => `${it.label}: $${it.amount.toLocaleString()}`).join('\n');
+    submitAnswer(costFlowState.promptKey, text);
+  };
 }
 
 /* =====================================================================
@@ -2259,6 +2818,12 @@ function submitAnswer(key, value) {
   // Display user echo
   let display = value;
   if (key === 'P6' && value.startsWith('flat:')) display = '$' + value.slice(5) + ' flat';
+  // For cost-list submissions, show a tidy summary instead of multi-line text
+  if ((key === 'P3' || key === 'P4') && costFlowState.promptKey === key && costFlowState.items.length > 0) {
+    const total = costFlowState.items.reduce((s, it) => s + it.amount, 0);
+    const unit = key === 'P4' ? '/mo' : '';
+    display = `${costFlowState.items.length} item${costFlowState.items.length === 1 ? '' : 's'} totaling ${fmtCurrency(total)}${unit}`;
+  }
   appendUser(display);
 
   // Store
@@ -2274,9 +2839,22 @@ function submitAnswer(key, value) {
     ans.source = 'user-entered';
   }
   if (key === 'P3' || key === 'P4') {
-    const parsed = parseCostList(value);
-    ans.parsed = parsed.items;
-    ans.total = parsed.total;
+    // If we have structured items from the cost-list flow, use them directly.
+    // Otherwise fall back to text parsing for legacy/edit paths.
+    if (costFlowState.promptKey === key && costFlowState.items.length > 0) {
+      ans.parsed = costFlowState.items.map(it => ({ label: it.label, amount: it.amount, source: it.source }));
+      ans.total = costFlowState.items.reduce((s, it) => s + it.amount, 0);
+      // Reset cost flow state for the next prompt
+      costFlowState.promptKey = null;
+      costFlowState.items = [];
+      costFlowState.categories = [];
+      costFlowState.currentIdx = 0;
+      costFlowState.container = null;
+    } else {
+      const parsed = parseCostList(value);
+      ans.parsed = parsed.items;
+      ans.total = parsed.total;
+    }
   }
 
   removePromptForm();
@@ -2495,7 +3073,7 @@ function openCoachMode() {
 
 function askCoach(topic) {
   appendUser(topic.label);
-  setTimeout(() => appendAgent(topic.answer, { authored: true }), 400);
+  setTimeout(() => appendAgent(topic.answer, { showAuthoredMarker: true }), 400);
 }
 
 function sendCoachMessage() {
@@ -2521,7 +3099,8 @@ function renderInputVariables() {
     const a = state.answers[key];
     const row = document.createElement('div');
     row.className = 'iv-row';
-    if (state.phase === 'generated' || state.phase === 'coach') row.classList.add('editable');
+    // Editable whenever the row has a value — not just after generation.
+    if (a.value != null) row.classList.add('editable');
 
     let displayValue = '<span class="empty">pending</span>';
     let isPlaceholder = true;
@@ -2536,7 +3115,7 @@ function renderInputVariables() {
 
     row.innerHTML = `
       <div class="iv-row-head">
-        <span class="iv-row-id">${key}</span>
+        <span class="iv-row-id">${key.replace('P', 'Q')}</span>
         <span class="iv-row-source ${a.source}">${a.source.replace(/-/g, ' ')}</span>
       </div>
       <div class="iv-row-label">${a.label}</div>
@@ -2560,8 +3139,10 @@ function escapeHtml(s) {
 }
 
 function startEdit(key, rowEl) {
-  if (state.phase !== 'generated' && state.phase !== 'coach') return;
   const a = state.answers[key];
+  if (a.value == null) return; // can't edit empty rows
+  // During collection, edits don't cascade (no deliverable yet) — they just update the value.
+  // After generation, edits trigger the cascade modal.
   const valEl = rowEl.querySelector('.iv-row-value');
   const actionsEl = rowEl.querySelector('.iv-row-edit-actions');
   const currentValue = a.value && a.value.startsWith && a.value.startsWith('flat:')
@@ -2597,7 +3178,24 @@ function startEdit(key, rowEl) {
       cancelEdit(key, rowEl);
       return;
     }
-    requestCascade(key, newValue);
+    if (state.phase === 'generated' || state.phase === 'coach') {
+      // Post-generation: trigger the dependency-map cascade with confirmation modal.
+      requestCascade(key, newValue);
+    } else {
+      // During collection: just update the value, no cascade needed.
+      const a = state.answers[key];
+      a.value = newValue;
+      a.source = 'user-entered';
+      // No parsed-items re-derivation needed during collection — P3/P4 edits
+      // during collection are rare; if they happen, fall back to text parsing.
+      if (key === 'P3' || key === 'P4') {
+        const parsed = parseCostList(newValue);
+        a.parsed = parsed.items;
+        a.total = parsed.total;
+      }
+      renderInputVariables();
+      updateStatus();
+    }
   };
   rowEl.querySelector('.cancel').onclick = () => cancelEdit(key, rowEl);
 }
@@ -2754,6 +3352,34 @@ function populateCard7() {
 function populateCard8() {
   const terms = glossary.slice(0, 4).map(g => `<div style="font-size:12px; line-height:1.5; margin-bottom:8px;"><strong style="color:var(--accent-deep);">${g.term}.</strong> ${g.def.split('.')[0]}.</div>`).join('');
   makeCard('8', 'Terms in Your Estimate', terms);
+}
+
+function buildQRecap() {
+  const keys = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6'];
+  const shortLabels = {
+    P1: 'Business type',
+    P2: 'Launch timeline',
+    P3: 'One-time costs',
+    P4: 'Monthly costs',
+    P5: 'Working capital months',
+    P6: 'Buffer applied',
+  };
+  return keys.map((k, i) => {
+    const a = state.answers[k];
+    let val = a.value || '—';
+    if (typeof val === 'string' && val.startsWith('flat:')) val = '$' + val.slice(5) + ' flat';
+    // For P3 and P4, show a summary rather than the full multi-line value
+    if ((k === 'P3' || k === 'P4') && a.parsed && a.parsed.length > 0) {
+      const total = a.parsed.reduce((s, it) => s + it.amount, 0);
+      const unit = k === 'P4' ? '/mo' : '';
+      val = `${a.parsed.length} item${a.parsed.length === 1 ? '' : 's'} totaling ${fmtCurrency(total)}${unit}`;
+    }
+    return `<tr>
+      <td class="q-num">Q${i + 1}</td>
+      <td class="q-label">${shortLabels[k]}</td>
+      <td class="q-val">${escapeHtml(val)}</td>
+    </tr>`;
+  }).join('');
 }
 
 function buildSynthesis() {
@@ -2945,6 +3571,14 @@ function renderDeliverable() {
           <span class="zone1-logo">POPSTART</span>
         </div>
         <p class="zone1-synthesis">${synth}</p>
+        <table class="q-recap">
+          <thead>
+            <tr><th colspan="3">Your answers</th></tr>
+          </thead>
+          <tbody>
+            ${buildQRecap()}
+          </tbody>
+        </table>
         <div class="zone1-chips">
           <div class="chip"><span class="chip-label">Stage</span><span class="chip-value">${state.stage}</span></div>
           <div class="chip"><span class="chip-label">Business type</span><span class="chip-value">${cat}</span></div>

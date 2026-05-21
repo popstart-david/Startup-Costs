@@ -2050,7 +2050,7 @@ body {
   <section class="chat-pane">
     <header class="chat-header">
       <div>
-        <div class="chat-header-title">Your Startup Cost Estimate v21.1000a</div>
+        <div class="chat-header-title">Your Startup Cost Estimate v21.11.00a</div>
         <div class="chat-header-meta" id="phase-label">Activity Mode</div>
       </div>
     </header>
@@ -3900,15 +3900,26 @@ function populateCard2() {
 }
 
 function populateCard3() {
+  const items = state.answers.P4.parsed || [];
   const monthly = state.answers.P4.total || 0;
   const months = parseInt(state.answers.P5.value);
   const wc = monthly * months;
   state.derived.workingCapital = wc;
-  const html = `
-    <div class="card-line"><span class="card-line-label">Monthly costs</span><span class="card-line-val">${fmtCurrency(monthly)}/mo</span></div>
-    <div class="card-line"><span class="card-line-label">× Working capital months</span><span class="card-line-val">${months}</span></div>
-    <div class="card-line"><span class="card-line-label">Working capital total</span><span class="card-line-val total">${fmtCurrency(wc)}</span></div>`;
-  makeCard('3', 'Monthly Costs & Working Capital', html);
+
+  // Itemized monthly cost lines (matches Card 2's pattern)
+  let lines = items.map(it =>
+    `<div class="card-line"><span class="card-line-label">${escapeHtml(it.label)}</span><span class="card-line-val">${fmtCurrency(it.amount)}/mo</span></div>`
+  ).join('');
+  lines += `<div class="card-line"><span class="card-line-label">Monthly subtotal</span><span class="card-line-val total">${fmtCurrency(monthly)}/mo</span></div>`;
+
+  // Working-capital math sits below the itemized breakdown, visually separated
+  const wcBlock = `
+    <div style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--line);">
+      <div class="card-line"><span class="card-line-label">× Working capital months</span><span class="card-line-val">${months}</span></div>
+      <div class="card-line"><span class="card-line-label">Working capital total</span><span class="card-line-val total">${fmtCurrency(wc)}</span></div>
+    </div>`;
+
+  makeCard('3', 'Monthly Costs & Working Capital', lines + wcBlock);
 }
 
 function populateCard4() {

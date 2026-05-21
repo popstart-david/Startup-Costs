@@ -456,6 +456,35 @@ body {
   cursor: not-allowed;
 }
 
+/* Action row — sits below the textarea, holds Submit + alt-mode switch */
+.prompt-form-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.prompt-form-actions .prompt-form-submit {
+  margin-top: 0;
+}
+.prompt-form-altmode-btn {
+  padding: 9px 14px;
+  background: transparent;
+  border: 1px dashed var(--accent);
+  color: var(--accent);
+  border-radius: 6px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: all 0.15s;
+}
+.prompt-form-altmode-btn:hover {
+  background: var(--accent-soft);
+  border-style: solid;
+}
+
 /* Per-item cost prompt — single category at a time */
 .cost-item-prompt {
   display: flex;
@@ -1754,7 +1783,7 @@ body {
   <section class="chat-pane">
     <header class="chat-header">
       <div>
-        <div class="chat-header-title">Your Startup Cost Estimate v21.930</div>
+        <div class="chat-header-title">Your Startup Cost Estimate v21.945a</div>
         <div class="chat-header-meta" id="phase-label">Activity Mode</div>
       </div>
     </header>
@@ -1914,18 +1943,26 @@ const promptSpec = {
     example: 'I\'m targeting a March launch, so → Within 3 months',
   },
   P3: {
-    type: 'cost-list',
+    type: 'textarea',
     title: 'One-Time Startup Costs',
-    hint: 'I\'ll walk you through the typical cost categories for your business type. For each one, enter your real estimate, use the typical range, or skip it if it doesn\'t apply.',
-    categoriesMap: 'oneTimeCategories',
+    hint: 'List everything you need to buy or pay for once to get your business open. Include equipment, licenses, legal fees, website build, branding, and any deposits. If you have real quotes, use them. If not, use your best estimate and we will flag it.',
+    placeholder: 'Website build: $5,000\nBranding and logo: $3,000\nLLC registration and permits: $800\nInitial inventory: $8,000\nProduct photography: $1,500',
     example: 'Website build: $5,000 / Branding and logo: $3,000 / LLC registration and permits: $800 / Initial inventory: $8,000 / Product photography: $1,500',
+    altMode: 'cost-list',
+    altModeLabel: 'Build it line-by-line',
+    altModeHint: 'Walk through each typical category for your business type, with a one-tap option to use the benchmark range.',
+    categoriesMap: 'oneTimeCategories',
   },
   P4: {
-    type: 'cost-list',
+    type: 'textarea',
     title: 'Monthly Operating Costs',
-    hint: 'Same approach for monthly costs — I\'ll walk you through the typical categories, and you can enter your number, use the typical range, or skip.',
+    hint: 'List your ongoing monthly expenses — the costs that repeat whether or not you make a sale. Include rent, payroll, software subscriptions, utilities, insurance, and marketing. Be specific. This is the number that determines how long your runway lasts.',
+    placeholder: 'Software stack (Shopify, Klaviyo, accounting): $300\nAdvertising budget: $1,500\nShipping and fulfillment supplies: $400\nInsurance: $150\nBookkeeping: $200',
+    example: 'Software stack (Shopify, Klaviyo, accounting): $300 / Advertising budget: $1,500 / Shipping and fulfillment supplies: $400 / Insurance: $150 / Bookkeeping: $200 / Misc: $250',
+    altMode: 'cost-list',
+    altModeLabel: 'Build it line-by-line',
+    altModeHint: 'Walk through each typical monthly category for your business type, with a one-tap option to use the benchmark range.',
     categoriesMap: 'monthlyCategories',
-    example: 'Software stack: $300/mo / Advertising: $1,500/mo / Shipping: $400/mo / Insurance: $150/mo / Bookkeeping: $200/mo',
   },
   P5: {
     type: 'select',
@@ -2002,8 +2039,7 @@ const monthlyCategories = {
     { id: 'utilities', label: 'Utilities', desc: 'Electric, internet, water', range: [200, 500] },
     { id: 'software', label: 'Software stack', desc: 'POS, accounting, email', range: [200, 500] },
     { id: 'marketing', label: 'Marketing & advertising', desc: 'Ads, social, content', range: [500, 2000] },
-    { id: 'insurance', label: 'Insurance', desc: 'Liability, property', range: [150, 400] },
-    { id: 'bookkeeping', label: 'Bookkeeping', desc: 'Bookkeeper or software', range: [150, 400] }
+    { id: 'insurance', label: 'Insurance', desc: 'Liability, property', range: [150, 400] }
   ],
   'E-commerce': [
     { id: 'software', label: 'Software stack', desc: 'Shopify, email tools, accounting', range: [200, 500] },
@@ -2023,16 +2059,14 @@ const monthlyCategories = {
     { id: 'utilities', label: 'Utilities', desc: 'Electric, gas, water', range: [500, 1500] },
     { id: 'ingredients', label: 'Ingredients & supplies', desc: 'Food costs, packaging', range: [2000, 6000] },
     { id: 'payroll', label: 'Payroll', desc: 'Staff wages', range: [2000, 8000] },
-    { id: 'marketing', label: 'Marketing & advertising', desc: 'Local marketing, social', range: [200, 1000] },
-    { id: 'insurance', label: 'Insurance', desc: 'Liability, food handler', range: [200, 500] }
+    { id: 'marketing', label: 'Marketing & advertising', desc: 'Local marketing, social', range: [200, 1000] }
   ],
   'Health and wellness': [
     { id: 'rent', label: 'Rent', desc: 'Studio or clinic space', range: [1500, 4000] },
     { id: 'utilities', label: 'Utilities', desc: 'Electric, internet, water', range: [200, 500] },
     { id: 'software', label: 'Software stack', desc: 'Booking, EHR, accounting', range: [150, 400] },
     { id: 'marketing', label: 'Marketing & advertising', desc: 'Local marketing, social', range: [300, 1500] },
-    { id: 'supplies', label: 'Supplies', desc: 'Treatment supplies', range: [200, 800] },
-    { id: 'insurance', label: 'Insurance', desc: 'Professional liability', range: [150, 500] }
+    { id: 'supplies', label: 'Supplies', desc: 'Treatment supplies', range: [200, 800] }
   ],
   'Professional services': [
     { id: 'software', label: 'Software stack', desc: 'Tools and subscriptions', range: [200, 500] },
@@ -2546,11 +2580,27 @@ function renderPromptForm(promptKey) {
     ta.placeholder = p.placeholder || '';
     ta.rows = 5;
     form.appendChild(ta);
+
+    const actions = document.createElement('div');
+    actions.className = 'prompt-form-actions';
+
     const submit = document.createElement('button');
     submit.className = 'prompt-form-submit';
     submit.textContent = 'Submit';
     submit.onclick = () => submitAnswer(promptKey, ta.value.trim());
-    form.appendChild(submit);
+    actions.appendChild(submit);
+
+    // If this prompt offers an alternative structured mode, surface a switch button.
+    if (p.altMode === 'cost-list') {
+      const altBtn = document.createElement('button');
+      altBtn.className = 'prompt-form-altmode-btn';
+      altBtn.innerHTML = '⇆ ' + p.altModeLabel;
+      altBtn.title = p.altModeHint;
+      altBtn.onclick = () => switchToCostList(promptKey, form);
+      actions.appendChild(altBtn);
+    }
+
+    form.appendChild(actions);
     setTimeout(() => ta.focus(), 100);
   } else if (p.type === 'buffer') {
     const wrap = document.createElement('div');
@@ -2583,12 +2633,36 @@ function renderPromptForm(promptKey) {
     wrap.appendChild(flatInputWrap);
     form.appendChild(wrap);
   } else if (p.type === 'cost-list') {
-    // Per-item flow handled separately
+    // Legacy path — no longer reached by P3/P4 (which use 'textarea' + altMode switch).
+    // Kept for compatibility if future prompts use 'cost-list' as their primary type.
     renderCostListPrompt(promptKey, form);
   }
 
   messagesEl.appendChild(form);
   scrollToBottom();
+}
+
+// Switch the active prompt-form from textarea mode to the per-item cost-list flow.
+// Called when the user clicks "Build it line-by-line" on P3 or P4.
+function switchToCostList(promptKey, formEl) {
+  // Remove the textarea, example button, example body, and submit/altmode actions.
+  // Preserve the hint at the top.
+  const hint = formEl.querySelector('.prompt-form-hint');
+  const exBtn = formEl.querySelector('.prompt-form-example-btn');
+  const exBody = formEl.querySelector('.prompt-form-example');
+  const ta = formEl.querySelector('textarea.prompt-input');
+  const actions = formEl.querySelector('.prompt-form-actions');
+  if (ta) ta.remove();
+  if (actions) actions.remove();
+  if (exBtn) exBtn.remove();
+  if (exBody) exBody.remove();
+
+  // Replace the hint with the alt-mode hint so the framing matches the new UI.
+  const p = promptSpec[promptKey];
+  if (hint) hint.textContent = p.altModeHint || hint.textContent;
+
+  // Render the per-item flow into the same form.
+  renderCostListPrompt(promptKey, formEl);
 }
 
 function removePromptForm() {
